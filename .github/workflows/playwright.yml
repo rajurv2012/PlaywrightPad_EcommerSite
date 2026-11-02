@@ -5,6 +5,7 @@ name: 🎭 Playwright Pad_Automation
 on:
   push:
     branches: [master]
+    
   pull_request:
     branches: [master]
   workflow_dispatch:
