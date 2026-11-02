@@ -8,7 +8,7 @@ test.beforeEach('launch the site', async ({ homepage }) => {
 test.afterEach("cleanup after test",async({page})=>{
   await page.close()
 })
-test("validate the homepage menu and sidemenu displays", async ({ homepage }) => {
+test("validate the homepage menu and sidemenu displays @regression", async ({ homepage }) => {
     await homepage.productSearchKeyWord('Mechanical Keyboard')
     await homepage.clearProductSearch()
     await homepage.clickAccessorires()
@@ -18,7 +18,7 @@ test("validate the homepage menu and sidemenu displays", async ({ homepage }) =>
     await homepage.sortOrder("Price: Low to High")
 })
 
-test("validate the no. of items into the home page", async ({ page }) => {
+test("validate the no. of items into the home page  @regression", async ({ page }) => {
     const pageOneItemCount = page.locator('.product-card.card-complex').all()
     const pageHas: number = (await pageOneItemCount).length;
     console.log('page one has ' + pageHas)
@@ -32,7 +32,7 @@ test("validate the no. of items into the home page", async ({ page }) => {
 })
 
 
-test("validate the sorting displayed as expected", async ({ homepage, page }) => {
+test("validate the sorting displayed as expected  @regression", async ({ homepage, page }) => {
     await homepage.productSearchKeyWord('All Products')
     await homepage.sortOrder("Price: Low to High")
     const productsCost: number[] = (await page.locator(".product-price").allTextContents()).map(price => Number(price.replace("$", "").trim()))

@@ -9,7 +9,7 @@ await homepage.open()
 )
 
 
-test("Place an order using wishlist ",async({homepage,wishListPage,cartAndCheckout})=>{
+test("Place an order using wishlist @regression ",async({homepage,wishListPage,cartAndCheckout})=>{
 
 await homepage.clickElectronic()
 await homepage.addProductToWishList('Wireless Headphones')

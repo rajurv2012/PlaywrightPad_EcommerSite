@@ -6,12 +6,12 @@ test.beforeEach('open the site',async({homepage})=>{
 await homepage.open();
 })
 
-test('open wishlist page and verify empty page',async({wishListPage})=>{
+test('open wishlist page and verify empty page  @regression',async({wishListPage})=>{
 await wishListPage.navigateToWishList();
 await wishListPage.checkEmptyWishlist()
 })
 
-test('add products to wishlist page',async({wishListPage,homepage,page})=>{
+test('add products to wishlist page  @regression',async({wishListPage,homepage,page})=>{
 await homepage.clickElectronic()
 await homepage.addProductToWishList('Wireless Headphones')
 await homepage.addProductToWishList('Mechanical Keyboard')
@@ -27,7 +27,7 @@ console.log('number of wishlist items are '+await wishListPage.countNumberOfProd
 expect(await wishListPage.countNumberOfProductsInWishList()).toEqual(4)
 })
 
-test('add to cart from the wishlist page', async({wishListPage,homepage,page})=>{
+test('add to cart from the wishlist page  @regression', async({wishListPage,homepage,page})=>{
 
 await homepage.clickElectronic()
 await homepage.addProductToWishList('Wireless Headphones')
