@@ -51,6 +51,15 @@ pipeline {
                 sh 'docker compose run --rm playwright-tests regression'
             }
         }
+        
+        stage('Publish Allure Report') {
+    steps {
+        allure([
+            includeProperties: false,
+            jdk: '',
+            results: [[path: 'allure-results']]
+        ])
+    }
     }
 
     post {
@@ -66,4 +75,6 @@ pipeline {
             echo 'Pipeline failed. Please check the console output.'
         }
     }
+
+    
 }
