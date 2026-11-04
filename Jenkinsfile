@@ -15,13 +15,6 @@ pipeline {
             }
         }
 
-        stage('Checkout') {
-            steps {
-                echo 'Checking out project from GitHub'
-                checkout scm
-            }
-        }
-
         stage('Create Environment File') {
             steps {
                 sh '''
@@ -51,15 +44,16 @@ pipeline {
                 sh 'docker compose run --rm playwright-tests regression'
             }
         }
-        
+
         stage('Publish Allure Report') {
-    steps {
-        allure([
-            includeProperties: false,
-            jdk: '',
-            results: [[path: 'allure-results']]
-        ])
-    }
+            steps {
+                allure([
+                    includeProperties: false,
+                    jdk: '',
+                    results: [[path: 'allure-results']]
+                ])
+            }
+        }
     }
 
     post {
@@ -75,6 +69,4 @@ pipeline {
             echo 'Pipeline failed. Please check the console output.'
         }
     }
-
-    
 }
