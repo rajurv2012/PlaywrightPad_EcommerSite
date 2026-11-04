@@ -1,8 +1,10 @@
+
 pipeline {
     agent any
 
     environment {
         PATH = "/Users/rameshraju/.docker/bin:/opt/homebrew/bin:${env.PATH}"
+        WEB_APP_URL = "https://playwrightpad.com/sandbox/ecommerce"
     }
 
     stages {
@@ -17,6 +19,15 @@ pipeline {
             steps {
                 echo 'Checking out project from GitHub'
                 checkout scm
+            }
+        }
+
+        stage('Create Environment File') {
+            steps {
+                sh '''
+                    echo "WEB_APP_URL=$WEB_APP_URL" > .env
+                    echo ".env file created successfully"
+                '''
             }
         }
 
@@ -43,6 +54,10 @@ pipeline {
     }
 
     post {
+        always {
+            sh 'rm -f .env'
+        }
+
         success {
             echo 'Playwright pipeline completed successfully!'
         }
