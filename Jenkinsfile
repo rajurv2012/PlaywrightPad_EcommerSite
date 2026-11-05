@@ -14,15 +14,17 @@ Pipeline Stages:
 
 */
 
-// Jenkinsfile.mac
-// Declarative Jenkins pipeline for macOS / Unix build agents
-
 pipeline {
   agent any
+  
   tools {
     git 'Default'
   }
-  options { timestamps() }
+  
+  options { 
+    timestamps() 
+  }
+  
   parameters {
     choice(
       name: 'TEST_SUITE',
@@ -40,27 +42,35 @@ pipeline {
       description: 'Run tests in headless or headed mode'
     )
   }
+  
   environment {
     NODE_ENV = 'test'
     CI = '1'
+    // Injects Homebrew and local paths so Jenkins shell steps can locate node, npm, and git
+    PATH = "/opt/homebrew/bin:/usr/local/bin:$env.PATH"
   }
+  
   stages {
     stage('🔄 Checkout') {
       steps {
         checkout scm
       }
     }
+    
     stage('📦 Install Dependencies') {
       steps {
+        sh 'node -v'
         sh 'npm ci'
       }
     }
+    
     stage('🤖 Install Playwright Browsers & Dependencies') {
       steps {
         sh 'npx playwright install --with-deps'
         sh 'cp -n .env.example .env || true'
       }
     }
+    
     stage('▶️ Run Playwright Tests') {
       steps {
         script {
@@ -72,11 +82,13 @@ pipeline {
       }
     }
   }
+  
   post {
     always {
       archiveArtifacts artifacts: 'reports/**,custom-report/**,allure-results/**', allowEmptyArchive: true
       junit testResults: 'reports/results.xml', allowEmptyResults: true
       allure includeProperties: false, results: [[path: 'allure-results']]
+      
       publishHTML([
         allowMissing: true,
         alwaysLinkToLastBuild: true,
@@ -85,6 +97,7 @@ pipeline {
         reportFiles: 'index.html',
         reportName: 'Playwright HTML Report'
       ])
+      
       publishHTML([
         allowMissing: true,
         alwaysLinkToLastBuild: true,
@@ -93,6 +106,7 @@ pipeline {
         reportFiles: '*.html',
         reportName: 'Custom Test Report'
       ])
+      
       emailext(
         subject: "Jenkins Build: ${env.JOB_NAME} #${env.BUILD_NUMBER} - ${currentBuild.currentResult}",
         body: """
@@ -108,12 +122,13 @@ pipeline {
               <a href="${env.BUILD_URL}Custom_20Test_20Report">Open Custom Report</a>
             </p>
         """,
-        to: "RECIVER_EMAIL_ADDRESS", //Replace with the recipient's email address
-        from: "SENDER_EMAIL_ADDRESS", //Replace with the sender's email address
-        replyTo: "RECIVER_EMAIL_ADDRESS",  //Replace with the recipient's email address
+        to: "RECIVER_EMAIL_ADDRESS@gmail.com",
+        from: "SENDER_EMAIL_ADDRESS@gmail.com",
+        replyTo: "RECIVER_EMAIL_ADDRESS@gmail.com",
         mimeType: "text/html"
       )
     }
+    
     success {
       script {
         sh 'rm -rf allure-results'
